@@ -2,8 +2,13 @@ from random import choice
 
 
 class Piece:
-    SHAPES = (("cyan", (0, 0), (1, 0), (2, 0), (3, 0)),  # I
-              ("blue", (0, 0), (1, 0), (2, 0), (2, 1))  # J
+    SHAPES = (("cyan", (0, 0), (1, 0), (2, 0), (3, 0)),     # I
+              ("blue", (0, 0), (1, 0), (2, 0), (2, 1)),     # J
+              ("yellow", (0, 0), (1, 0), (1, 0), (1, 1)),   # O
+              ("pink", (0, 0), (1, 0), (2, 0), (1, 1)),     # T
+              ("orange", (0, 0), (1, 0), (2, 0), (0, 1)),   # L
+              ("green", (1, 0), (2, 0), (0, 1), (1, 1)),    # S
+              ("red", (0, 0), (1, 0), (1, 1), (2, 1))       # Z
               )
     BLOCK_SIZE = 20
 
@@ -12,6 +17,7 @@ class Piece:
         self.blocks = []
         self.color = self.piece[0]
         self.canvas = canvas
+        self.is_at_bottom = False
 
         for point in self.piece[1:]:
             block = self.canvas.create_rectangle(
@@ -43,8 +49,11 @@ class Piece:
 
         can_move = False
 
-        if direction == "Down" and current_coords[3] + self.BLOCK_SIZE <= self.canvas.winfo_height():
-            can_move = True
+        if direction == "Down":
+            if current_coords[3] + self.BLOCK_SIZE <= self.canvas.winfo_height():
+                can_move = True
+            else:
+                self.is_at_bottom = True
 
         if direction == "Right" and current_coords[2] + self.BLOCK_SIZE <= self.canvas.winfo_width():
             can_move = True
@@ -69,3 +78,5 @@ class Piece:
             "Right": 0,
             "Left": 0
         }[direction]
+
+    # def is_at_bottom(self):

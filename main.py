@@ -1,7 +1,6 @@
 from tkinter import *
 from MainMenu import MainMenu
 from Piece import Piece
-from random import choice
 
 
 class Main:
@@ -15,19 +14,25 @@ class Main:
         self.yMove = 1
         self.master = master
         self.master.bind("<Key>", self.handle_move)
+        self.is_new_game = True
+        self.pieces = []
 
     def add_piece(self):
         self.current_piece = Piece(canvas=self.canvas)
+        self.pieces.append(self.current_piece)
 
     def move_fall(self):
-        self.current_piece.move("Down")
-        # self.move_side()
+        if self.is_new_game:
+            self.add_piece()
+            self.is_new_game = False
 
+        if self.current_piece.is_at_bottom:
+            self.add_piece()
+
+        self.current_piece.move("Down")
         self.master.after(500, self.move_fall)
 
     def move(self, direction):
-        # sides = ("right", "left")
-        # side = choice(sides)
         self.current_piece.move(direction)
 
     # handle key presses
@@ -43,7 +48,6 @@ class Main:
 root = Tk()
 root.geometry("250x560")
 main = Main(root)
-main.add_piece()
 root.update()
 main.move_fall()
 root.mainloop()
