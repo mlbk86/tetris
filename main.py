@@ -1,12 +1,13 @@
 from tkinter import *
 from MainMenu import MainMenu
 from Piece import Piece
+import constants
 
 
 class Main:
     def __init__(self, master):
         main_menu = MainMenu(master)
-        self.canvas = Canvas(master, width=250, height=560)
+        self.canvas = Canvas(master, width=constants.CANVAS_W, height=constants.CANVAS_H, bg=constants.BACKGROUND)
         self.canvas.grid(column=0, row=0, sticky=(N, W, E, S))
         self.canvas.pack()
         self.current_piece = None
@@ -43,10 +44,29 @@ class Main:
             self.move("Right")
         if event.keysym == "Down":
             self.move("Down")
+        if event.keysym == "space":
+            self.remove_complete_lines()
+
+    def remove_complete_lines(self):
+        all_boxes = self.canvas.find_all()
+        y_lines = set([self.canvas.coords(box)[3] for box in all_boxes])
+
+        boxes_to_remove = []
+        for line in sorted(y_lines):
+            boxes_to_remove = self.canvas.find_enclosed(0, line - constants.BLOCK_SIZE - 1, constants.CANVAS_W,
+                                                        line + 1)
+            if boxes_to_remove.__len__() >= int(constants.CANVAS_W / constants.BLOCK_SIZE):
+                for box in boxes_to_remove:
+                    print("delete box:", box)
+                    self.canvas.delete(box)
+
+        print(boxes_to_remove)
 
 
 root = Tk()
-root.geometry("250x560")
+root.geometry(str(constants.CANVAS_W) + "x" + str(constants.CANVAS_H))
+root.configure(bg=constants.BACKGROUND)
+root.resizable(False, False)
 main = Main(root)
 root.update()
 main.move_fall()
