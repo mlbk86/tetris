@@ -18,16 +18,19 @@ class Main:
         self.is_new_game = True
         self.pieces = []
 
+    # adds new piece to the board
     def add_piece(self):
         self.current_piece = Piece(canvas=self.canvas)
         self.pieces.append(self.current_piece)
 
+    # main loop for moving, adding and removing lines
     def move_fall(self):
         if self.is_new_game:
             self.add_piece()
             self.is_new_game = False
 
         if self.current_piece.is_at_bottom:
+            self.remove_complete_lines()
             self.add_piece()
 
         self.current_piece.move("Down")
@@ -44,23 +47,23 @@ class Main:
             self.move("Right")
         if event.keysym == "Down":
             self.move("Down")
-        if event.keysym == "space":
-            self.remove_complete_lines()
 
     def remove_complete_lines(self):
         all_boxes = self.canvas.find_all()
         y_lines = set([self.canvas.coords(box)[3] for box in all_boxes])
 
-        boxes_to_remove = []
         for line in sorted(y_lines):
             boxes_to_remove = self.canvas.find_enclosed(0, line - constants.BLOCK_SIZE - 1, constants.CANVAS_W,
                                                         line + 1)
             if boxes_to_remove.__len__() >= int(constants.CANVAS_W / constants.BLOCK_SIZE):
                 for box in boxes_to_remove:
-                    print("delete box:", box)
                     self.canvas.delete(box)
 
-        print(boxes_to_remove)
+                # fall boxes that are above removed line
+                above_boxes = self.canvas.find_overlapping(1, 1, constants.CANVAS_W - 1, line - 1)
+                if above_boxes:
+                    for box in above_boxes:
+                        self.canvas.move(box, 0, constants.BLOCK_SIZE)
 
 
 root = Tk()

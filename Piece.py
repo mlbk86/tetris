@@ -4,13 +4,13 @@ import Box
 
 
 class Piece:
-    SHAPES = (("cyan", (0, 0), (1, 0), (2, 0), (3, 0)),     # I
-              ("blue", (0, 0), (1, 0), (2, 0), (2, 1)),     # J
-              ("yellow", (0, 0), (1, 0), (1, 1)),           # O
-              ("pink", (0, 0), (1, 0), (2, 0), (1, 1)),     # T
-              ("orange", (0, 0), (1, 0), (2, 0), (0, 1)),   # L
-              ("green", (1, 0), (2, 0), (0, 1), (1, 1)),    # S
-              ("red", (0, 0), (1, 0), (1, 1), (2, 1))       # Z
+    SHAPES = (("cyan", (0, 0), (1, 0), (2, 0), (3, 0)),  # I
+              ("blue", (0, 0), (1, 0), (2, 0), (2, 1)),  # J
+              ("yellow", (0, 0), (1, 0), (1, 1)),  # O
+              ("pink", (0, 0), (1, 0), (2, 0), (1, 1)),  # T
+              ("orange", (0, 0), (1, 0), (2, 0), (0, 1)),  # L
+              ("green", (1, 0), (2, 0), (0, 1), (1, 1)),  # S
+              ("red", (0, 0), (1, 0), (1, 1), (2, 1))  # Z
               )
 
     def __init__(self, canvas):
@@ -20,6 +20,7 @@ class Piece:
         self.canvas = canvas
         self.is_at_bottom = False
 
+        # hash tag is used to recognize boxes grouped into one piece
         self.hash_tag = getrandbits(64)
 
         for point in self.piece[1:]:
@@ -46,8 +47,8 @@ class Piece:
 
     def can_move_piece(self, direction):
         for box in self.boxes:
-            # tag = self.canvas.gettags(box)
-            result, self.is_at_bottom = Box.can_move_block(self.canvas, self.canvas.coords(box), direction, self.hash_tag)
+            result, self.is_at_bottom = Box.can_move_block(self.canvas, self.canvas.coords(box), direction,
+                                                           self.hash_tag)
             if not result:
                 return False
 
