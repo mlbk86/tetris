@@ -1,4 +1,6 @@
 from tkinter import *
+from tkinter import messagebox
+
 from MainMenu import MainMenu
 from Piece import Piece
 import constants
@@ -11,17 +13,21 @@ class Main:
         self.canvas.grid(column=0, row=0, sticky=(N, W, E, S))
         self.canvas.pack()
         self.current_piece = None
-        self.xMove = 0
-        self.yMove = 1
         self.master = master
         self.master.bind("<Key>", self.handle_move)
         self.is_new_game = True
-        self.pieces = []
+        self.is_game_over = False
+
+    def start(self):
+        self.canvas.delete(ALL)
+        self.is_new_game = True
+        self.current_piece = None
+        self.is_game_over = False
+        self.master.after(1000, self.move_fall)
 
     # adds new piece to the board
     def add_piece(self):
         self.current_piece = Piece(canvas=self.canvas)
-        self.pieces.append(self.current_piece)
 
     # main loop for moving, adding and removing lines
     def move_fall(self):
@@ -29,12 +35,21 @@ class Main:
             self.add_piece()
             self.is_new_game = False
 
+        self.current_piece.move("Down")
+
         if self.current_piece.is_at_bottom:
             self.remove_complete_lines()
+
+            if self.current_piece.is_at_top:
+                messagebox.showinfo("GAME OVER", "Game over :-(")
+                self.is_game_over = True
+                self.start()
+                return
+
             self.add_piece()
 
-        self.current_piece.move("Down")
-        self.master.after(500, self.move_fall)
+        if not self.is_game_over:
+            self.master.after(500, self.move_fall)
 
     def move(self, direction):
         self.current_piece.move(direction)

@@ -1,7 +1,7 @@
 from random import choice, getrandbits
 import constants
 import Box
-
+import ctypes
 
 class Piece:
     SHAPES = (("cyan", (0, 0), (1, 0), (2, 0), (3, 0)),  # I
@@ -19,6 +19,7 @@ class Piece:
         self.color = self.piece[0]
         self.canvas = canvas
         self.is_at_bottom = False
+        self.is_at_top = False
 
         # hash tag is used to recognize boxes grouped into one piece
         self.hash_tag = getrandbits(64)
@@ -44,6 +45,8 @@ class Piece:
         elif self.is_at_bottom:
             for box in self.boxes:
                 self.canvas.itemconfig(box, tags=())
+                if self.canvas.coords(box)[1] <= 5:
+                    self.is_at_top = True
 
     def can_move_piece(self, direction):
         for box in self.boxes:

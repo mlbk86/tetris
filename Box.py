@@ -14,8 +14,12 @@ def can_move_block(canvas, coords, direction, tag):
                                                  coords[2] - 1,
                                                  coords[3] + constants.BLOCK_SIZE - 1)
             can_move = is_box_from_one_piece(overlapped, canvas, tag)
+
+            if not can_move:
+                is_at_bottom = True
         else:
             is_at_bottom = True
+            can_move = False
 
     if direction == "Right" and coords[2] + constants.BLOCK_SIZE <= canvas.winfo_width():
 
@@ -46,7 +50,7 @@ def is_box_from_one_piece(overlapped, canvas, tag):
         for box in overlapped:
             box_tags = canvas.gettags(box)
             if str(tag) in box_tags:
-                return True, False
+                return True
         can_move = False
     else:
         can_move = True
