@@ -74,12 +74,18 @@ class Piece:
 
         if self.direction == 0:
             for i in range(-1, 3):
-                new_coords.append((root_x, root_y + (i * constants.BLOCK_SIZE)))
+                y = root_y + (i * constants.BLOCK_SIZE)
+                new_coords.append((root_x, y, root_x + constants.BLOCK_SIZE, y + constants.BLOCK_SIZE))
             self.direction = 1
         else:
             for i in range(-1, 3):
-                new_coords.append((root_x + (i * constants.BLOCK_SIZE), root_y))
+                x = root_x + (i * constants.BLOCK_SIZE)
+                new_coords.append((x, root_y, x + constants.BLOCK_SIZE, root_y + constants.BLOCK_SIZE))
             self.direction = 0
+
+        for coord in new_coords:
+            if not (Box.coords_are_valid(coord[0], coord[1], coord[2], coord[3])):
+                return
 
         self.redraw(new_coords)
 
