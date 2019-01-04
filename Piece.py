@@ -1,7 +1,7 @@
 from random import choice, getrandbits
 import constants
 import Box
-import ctypes
+
 
 class Piece:
     SHAPES = (("cyan", (0, 0), (1, 0), (2, 0), (3, 0)),  # I
@@ -20,6 +20,7 @@ class Piece:
         self.canvas = canvas
         self.is_at_bottom = False
         self.is_at_top = False
+        self.direction = 0
 
         # hash tag is used to recognize boxes grouped into one piece
         self.hash_tag = getrandbits(64)
@@ -56,6 +57,51 @@ class Piece:
                 return False
 
         return True
+
+    def rotate(self):
+        color = {
+            "cyan": self.rotate_cyan,
+            "blue": self.rotate_blue
+        }
+
+        color[self.color]()
+
+    def rotate_cyan(self):
+        new_coords = []
+
+        root_x = self.canvas.coords(self.boxes[1])[0]
+        root_y = self.canvas.coords(self.boxes[1])[1]
+
+        if self.direction == 0:
+            for i in range(-1, 3):
+                new_coords.append((root_x, root_y + (i * constants.BLOCK_SIZE)))
+            self.direction = 1
+        else:
+            for i in range(-1, 3):
+                new_coords.append((root_x + (i * constants.BLOCK_SIZE), root_y))
+            self.direction = 0
+
+        self.redraw(new_coords)
+
+    def rotate_blue(self):
+        print("BLUE")
+
+    def redraw(self, new_coords):
+        for box in self.boxes:
+            self.canvas.delete(box)
+
+        self.boxes.clear()
+
+        for point in new_coords:
+            box = self.canvas.create_rectangle(
+                point[0],
+                point[1],
+                point[0] + constants.BLOCK_SIZE,
+                point[1] + constants.BLOCK_SIZE,
+                fill=self.color,
+                tags=self.hash_tag
+            )
+            self.boxes.append(box)
 
     @staticmethod
     def get_x(direction):

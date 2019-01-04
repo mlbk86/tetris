@@ -62,6 +62,8 @@ class Main:
             self.move("Right")
         if event.keysym == "Down":
             self.move("Down")
+        if event.keysym == "Up":
+            self.current_piece.rotate()
 
     def remove_complete_lines(self):
         all_boxes = self.canvas.find_all()
