@@ -6,7 +6,7 @@ import Box
 class Piece:
     SHAPES = (("cyan", (0, 0), (1, 0), (2, 0), (3, 0)),  # I
               ("blue", (0, 0), (1, 0), (2, 0), (2, 1)),  # J
-              ("yellow", (0, 0), (1, 0), (1, 0), (1, 1)),  # O
+              ("yellow", (0, 0), (1, 0), (0, 1), (1, 1)),  # O
               ("pink", (0, 1), (1, 1), (2, 1), (1, 2)),  # T
               ("orange", (0, 0), (1, 0), (2, 0), (0, 1)),  # L
               ("green", (1, 0), (2, 0), (0, 1), (1, 1)),  # S
@@ -61,10 +61,18 @@ class Piece:
     def rotate(self):
         color = {
             "cyan": self.rotate_cyan,
-            "blue": self.rotate_blue
+            "blue": self.rotate_blue,
+            "pink": self.rotate_pink,
+            "orange": self.rotate_orange,
+            "green": self.rotate_green,
+            "red": self.rotate_red,
+            "yellow": self.rotate_yellow
         }
 
         color[self.color]()
+
+    def rotate_yellow(self):
+        pass
 
     def rotate_cyan(self):
         new_coords = []
@@ -91,9 +99,6 @@ class Piece:
 
     def rotate_blue(self):
         new_coords = []
-
-        # for box in self.boxes:
-        #     current_coords.append((self.canvas.coords(box)[0], self.canvas.coords(box)[1]))
 
         if self.direction == 0:
             # box 1
@@ -177,61 +182,82 @@ class Piece:
 
         self.redraw(new_coords)
 
-    def rotate_yellow(self):
-        new_coords = []
-        current_coords = []
-        for box in self.boxes:
-            current_coords.append((self.canvas.coords(box)[0], self.canvas.coords(box)[1]))
-
-        if self.direction == 0:
-            print(current_coords)
-
-            self.direction = 1
-
-        elif self.direction == 1:
-            print(current_coords)
-
-            self.direction = 2
-
-        elif self.direction == 2:
-            print(current_coords)
-
-            self.direction = 3
-
-        else:
-            print(current_coords)
-
-            self.direction = 0
-
-        for coord in new_coords:
-            if not (Box.coords_are_valid(coord[0], coord[1], coord[2], coord[3])):
-                return
-
-        self.redraw(new_coords)
-
     def rotate_pink(self):
         new_coords = []
-        current_coords = []
-        for box in self.boxes:
-            current_coords.append((self.canvas.coords(box)[0], self.canvas.coords(box)[1]))
 
         if self.direction == 0:
-            print(current_coords)
+            # box 1
+            new_x, new_y = self.get_new_position(0, 0, 0, 1, -1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 2
+            new_x, new_y = self.get_new_position(1, 0, 0, 0, 0)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 3
+            new_x, new_y = self.get_new_position(2, 0, 0, -1, 1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 4
+            new_x, new_y = self.get_new_position(3, 0, 0, -1, -1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
             self.direction = 1
 
         elif self.direction == 1:
-            print(current_coords)
+            # box 1
+            new_x, new_y = self.get_new_position(0, 0, 0, 1, 1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 2
+            new_x, new_y = self.get_new_position(1, 0, 0, 0, 0)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 3
+            new_x, new_y = self.get_new_position(2, 0, 0, -1, -1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 4
+            new_x, new_y = self.get_new_position(3, 0, 0, 1, -1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
             self.direction = 2
 
         elif self.direction == 2:
-            print(current_coords)
+            # box 1
+            new_x, new_y = self.get_new_position(0, 0, 0, -1, 1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 2
+            new_x, new_y = self.get_new_position(1, 0, 0, 0, 0)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 3
+            new_x, new_y = self.get_new_position(2, 0, 0, 1, -1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 4
+            new_x, new_y = self.get_new_position(3, 0, 0, 1, 1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
             self.direction = 3
 
-        else:
-            print(current_coords)
+        elif self.direction == 3:
+            # box 1
+            new_x, new_y = self.get_new_position(0, 0, 0, -1, -1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 2
+            new_x, new_y = self.get_new_position(1, 0, 0, 0, 0)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 3
+            new_x, new_y = self.get_new_position(2, 0, 0, 1, 1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 4
+            new_x, new_y = self.get_new_position(3, 0, 0, -1, 1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
             self.direction = 0
 
@@ -243,27 +269,80 @@ class Piece:
 
     def rotate_orange(self):
         new_coords = []
-        current_coords = []
-        for box in self.boxes:
-            current_coords.append((self.canvas.coords(box)[0], self.canvas.coords(box)[1]))
 
         if self.direction == 0:
-            print(current_coords)
+            # box 1
+            new_x, new_y = self.get_new_position(0, 0, 0, 1, 0)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 2
+            new_x, new_y = self.get_new_position(1, 0, 0, 0, 1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 3
+            new_x, new_y = self.get_new_position(2, 0, 0, -1, 2)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 4
+            new_x, new_y = self.get_new_position(3, 0, 0, 0, -1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
             self.direction = 1
 
         elif self.direction == 1:
-            print(current_coords)
+            # box 1
+            new_x, new_y = self.get_new_position(0, 0, 0, 1, 1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 2
+            new_x, new_y = self.get_new_position(1, 0, 0, 0, 0)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 3
+            new_x, new_y = self.get_new_position(2, 0, 0, -1, -1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 4
+            new_x, new_y = self.get_new_position(3, 0, 0, 2, 0)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
             self.direction = 2
 
         elif self.direction == 2:
-            print(current_coords)
+            # box 1
+            new_x, new_y = self.get_new_position(0, 0, 0, -2, 1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 2
+            new_x, new_y = self.get_new_position(1, 0, 0, -1, 0)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 3
+            new_x, new_y = self.get_new_position(2, 0, 0, 0, -1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 4
+            new_x, new_y = self.get_new_position(3, 0, 0, -1, 2)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
             self.direction = 3
 
-        else:
-            print(current_coords)
+        elif self.direction == 3:
+            # box 1
+            new_x, new_y = self.get_new_position(0, 0, 0, 0, -2)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 2
+            new_x, new_y = self.get_new_position(1, 0, 0, 1, -1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 3
+            new_x, new_y = self.get_new_position(2, 0, 0, 2, 0)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 4
+            new_x, new_y = self.get_new_position(3, 0, 0, -1, -1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
             self.direction = 0
 
@@ -275,27 +354,42 @@ class Piece:
 
     def rotate_green(self):
         new_coords = []
-        current_coords = []
-        for box in self.boxes:
-            current_coords.append((self.canvas.coords(box)[0], self.canvas.coords(box)[1]))
 
         if self.direction == 0:
-            print(current_coords)
+            # box 1
+            new_x, new_y = self.get_new_position(0, 0, 0, 0, 1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 2
+            new_x, new_y = self.get_new_position(1, 0, 0, -1, 2)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 3
+            new_x, new_y = self.get_new_position(2, 0, 0, 0, -1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 4
+            new_x, new_y = self.get_new_position(3, 0, 0, -1, 0)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
             self.direction = 1
 
         elif self.direction == 1:
-            print(current_coords)
+            # box 1
+            new_x, new_y = self.get_new_position(0, 0, 0, 0, -1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
-            self.direction = 2
+            # box 2
+            new_x, new_y = self.get_new_position(1, 0, 0, 1, -2)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
-        elif self.direction == 2:
-            print(current_coords)
+            # box 3
+            new_x, new_y = self.get_new_position(2, 0, 0, 0, 1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
-            self.direction = 3
-
-        else:
-            print(current_coords)
+            # box 4
+            new_x, new_y = self.get_new_position(3, 0, 0, 1, 0)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
             self.direction = 0
 
@@ -307,27 +401,42 @@ class Piece:
 
     def rotate_red(self):
         new_coords = []
-        current_coords = []
-        for box in self.boxes:
-            current_coords.append((self.canvas.coords(box)[0], self.canvas.coords(box)[1]))
 
         if self.direction == 0:
-            print(current_coords)
+            # box 1
+            new_x, new_y = self.get_new_position(0, 0, 0, 1, 0)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 2
+            new_x, new_y = self.get_new_position(1, 0, 0, 0, 1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 3
+            new_x, new_y = self.get_new_position(2, 0, 0, -1, 0)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
+
+            # box 4
+            new_x, new_y = self.get_new_position(3, 0, 0, -2, 1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
             self.direction = 1
 
         elif self.direction == 1:
-            print(current_coords)
+            # box 1
+            new_x, new_y = self.get_new_position(0, 0, 0, -1, 0)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
-            self.direction = 2
+            # box 2
+            new_x, new_y = self.get_new_position(1, 0, 0, 0, -1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
-        elif self.direction == 2:
-            print(current_coords)
+            # box 3
+            new_x, new_y = self.get_new_position(2, 0, 0, 1, 0)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
-            self.direction = 3
-
-        else:
-            print(current_coords)
+            # box 4
+            new_x, new_y = self.get_new_position(3, 0, 0, 2, -1)
+            new_coords.append((new_x, new_y, new_x + constants.BLOCK_SIZE, new_y + constants.BLOCK_SIZE))
 
             self.direction = 0
 
