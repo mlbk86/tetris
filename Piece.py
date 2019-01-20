@@ -1,3 +1,11 @@
+"""
+Representation of one piece/tetromino.
+
+---------------------
+author: Michal Blazek
+mail: mlbk86@gmail.com
+ """
+
 from random import choice, getrandbits
 import constants
 import Box

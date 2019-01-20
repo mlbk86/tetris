@@ -1,3 +1,11 @@
+"""
+Representation of one building block for the tetrominos.
+
+---------------------
+author: Michal Blazek
+mail: mlbk86@gmail.com
+ """
+
 import constants
 
 

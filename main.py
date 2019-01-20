@@ -1,7 +1,19 @@
+#!/usr/bin/env python
+
+"""
+Simple tetris game
+
+---------------------
+author: Michal Blazek
+mail: mlbk86@gmail.com
+ """
+
+
 from tkinter import *
 from tkinter import messagebox
 from Piece import Piece
 import constants
+from TextAndValue import TextAndValue
 
 
 class Main:
@@ -14,40 +26,27 @@ class Main:
         self.is_new_game = True
         self.is_game_over = True
         self.speed = constants.INITIAL_SPEED
-        self.score_label = Label(master, text="Score: ", font=("Arial", 16), bg="grey")
-        self.score_label.grid(column=1, row=0, sticky=(N, W, E), pady=3)
-        self.score_val = 0
-        self.score_val_str = StringVar()
-        self.score_val_str.set(str(self.score_val))
-        self.score = Label(master, textvariable=self.score_val_str, font=("Arial", 16), bg="grey")
-        self.score.grid(column=2, row=0, sticky=(N, W, E), pady=3)
-        self.level_label = Label(master, text="Level: ", font=("Arial", 16), bg="grey")
-        self.level_label.grid(column=1, row=1, sticky=(N, W, E))
-        self.level_val = 1
-        self.level_val_str = StringVar()
-        self.level_val_str.set(str(self.level_val))
-        self.level = Label(master, textvariable=self.level_val_str, font=("Arial", 16), bg="grey")
-        self.level_label.grid(column=1, row=1, sticky=(N, W, E))
-        self.level.grid(column=2, row=1, sticky=(N, W, E))
+
+        self.score_frame = TextAndValue(master, label="Score", value=0)
+        self.score_frame.grid(column=1, row=0, sticky=(N, W, E), pady=3)
+
+        self.level_frame = TextAndValue(master, label="Level", value=1)
+        self.level_frame.grid(column=1, row=1, sticky=(N, W, E), pady=3)
+
         self.direction_label = Label(master, text="Rotate: arrow UP", bg="grey", font=("Arial", 12))
-        self.direction_label.grid(column=1, row=2, sticky=(N, W, E), pady=10, columnspan=2)
+        self.direction_label.grid(column=1, row=2, sticky=(N, W, E), pady=10)
         self.new_game_button = Button(master, text='New game', command=self.start, background="grey", fg="blue",
                                       highlightbackground=constants.BACKGROUND)
-        self.new_game_button.grid(column=1, row=3, sticky=(N, W, E), pady=10, columnspan=2)
+        self.new_game_button.grid(column=1, row=3, sticky=(N, W, E), pady=10)
         self.master.grid_rowconfigure(3, weight=1)
-
-    def set_new_game(self):
-        self.is_game_over = False
 
     def start(self):
         self.canvas.delete(ALL)
         self.is_new_game = True
         self.current_piece = None
         self.is_game_over = False
-        self.score_val = 0
-        self.score_val_str.set(str(self.score_val))
-        self.level_val = 1
-        self.level_val_str.set(str(self.level_val))
+        self.score_frame.set(0)
+        self.level_frame.set(1)
         self.speed = constants.INITIAL_SPEED
 
     # adds new piece to the board
@@ -67,7 +66,7 @@ class Main:
                 self.remove_complete_lines()
 
                 if self.current_piece.is_at_top:
-                    messagebox.showinfo("GAME OVER", "Game over! Your score: " + self.score_val_str.get())
+                    messagebox.showinfo("GAME OVER", "Game over! Your score: " + str(self.score_frame.get()))
                     self.is_game_over = True
 
                 if not self.is_game_over:
@@ -99,10 +98,9 @@ class Main:
             if boxes_to_remove.__len__() >= int(constants.CANVAS_W / constants.BLOCK_SIZE):
                 for box in boxes_to_remove:
                     self.canvas.delete(box)
-                self.score_val += 1
-                self.score_val_str.set(str(self.score_val))
-                if self.score_val % 10 == 0:
-                    self.level_val += 1
+                self.score_frame.set(self.score_frame.get() + 1)
+                if self.score_frame.get() % 10 == 0:
+                    self.level_frame.set(self.level_frame.get() + 1)
                     if self.speed > constants.SPEED_STEP:
                         self.speed -= constants.SPEED_STEP
 
