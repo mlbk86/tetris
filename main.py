@@ -12,7 +12,7 @@ class Main:
         self.master = master
         self.master.bind("<Key>", self.handle_move)
         self.is_new_game = True
-        self.is_game_over = False
+        self.is_game_over = True
         self.speed = constants.INITIAL_SPEED
         self.score_label = Label(master, text="Score: ", font=("Arial", 16), bg="grey")
         self.score_label.grid(column=1, row=0, sticky=(N, W, E), pady=3)
@@ -31,13 +31,13 @@ class Main:
         self.level.grid(column=2, row=1, sticky=(N, W, E))
         self.direction_label = Label(master, text="Rotate: arrow UP", bg="grey", font=("Arial", 12))
         self.direction_label.grid(column=1, row=2, sticky=(N, W, E), pady=10, columnspan=2)
-        self.new_game_button = Button(master, text='New game', command=self.set_new_game, background="grey", fg="blue",
+        self.new_game_button = Button(master, text='New game', command=self.start, background="grey", fg="blue",
                                       highlightbackground=constants.BACKGROUND)
         self.new_game_button.grid(column=1, row=3, sticky=(N, W, E), pady=10, columnspan=2)
         self.master.grid_rowconfigure(3, weight=1)
 
     def set_new_game(self):
-        self.is_game_over = True
+        self.is_game_over = False
 
     def start(self):
         self.canvas.delete(ALL)
@@ -49,7 +49,6 @@ class Main:
         self.level_val = 1
         self.level_val_str.set(str(self.level_val))
         self.speed = constants.INITIAL_SPEED
-        self.master.after(self.speed, self.move_fall)
 
     # adds new piece to the board
     def add_piece(self):
@@ -57,28 +56,24 @@ class Main:
 
     # main loop for moving, adding and removing lines
     def move_fall(self):
-        if self.is_game_over:
-            self.start()
-            return
-
-        if self.is_new_game:
-            self.add_piece()
-            self.is_new_game = False
-
-        self.current_piece.move("Down")
-
-        if self.current_piece.is_at_bottom:
-            self.remove_complete_lines()
-
-            if self.current_piece.is_at_top:
-                messagebox.showinfo("GAME OVER", "Game over :-(")
-                self.is_game_over = True
-                return
-
-            self.add_piece()
-
         if not self.is_game_over:
-            self.master.after(self.speed, self.move_fall)
+            if self.is_new_game:
+                self.add_piece()
+                self.is_new_game = False
+
+            self.current_piece.move("Down")
+
+            if self.current_piece.is_at_bottom:
+                self.remove_complete_lines()
+
+                if self.current_piece.is_at_top:
+                    messagebox.showinfo("GAME OVER", "Game over! Your score: " + self.score_val_str.get())
+                    self.is_game_over = True
+
+                if not self.is_game_over:
+                    self.add_piece()
+
+        self.master.after(self.speed, self.move_fall)
 
     def move(self, direction):
         self.current_piece.move(direction)
