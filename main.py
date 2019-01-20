@@ -1,15 +1,11 @@
 from tkinter import *
 from tkinter import messagebox
-from tkinter import font
-
-from MainMenu import MainMenu
 from Piece import Piece
 import constants
 
 
 class Main:
     def __init__(self, master):
-        main_menu = MainMenu(master)
         self.canvas = Canvas(master, width=constants.CANVAS_W, height=constants.CANVAS_H, bg=constants.BACKGROUND)
         self.canvas.grid(column=0, row=0, rowspan=5, sticky=(N, W, E, S))
         self.current_piece = None
