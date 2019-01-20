@@ -11,32 +11,37 @@ class Main:
     def __init__(self, master):
         main_menu = MainMenu(master)
         self.canvas = Canvas(master, width=constants.CANVAS_W, height=constants.CANVAS_H, bg=constants.BACKGROUND)
-        self.canvas.grid(column=0, row=0, rowspan=2, sticky=(N, W, E, S))
+        self.canvas.grid(column=0, row=0, rowspan=5, sticky=(N, W, E, S))
         self.current_piece = None
         self.master = master
         self.master.bind("<Key>", self.handle_move)
         self.is_new_game = True
         self.is_game_over = False
-        self.score_frame = Frame(master, borderwidth=3)
-        self.score_frame.grid(column=1, row=0, sticky=(N, W, E))
-        self.score_label = Label(self.score_frame, text='Score: ', font=('Arial', 16))
+        self.speed = constants.INITIAL_SPEED
+        self.score_label = Label(master, text="Score: ", font=("Arial", 16), bg="grey")
+        self.score_label.grid(column=1, row=0, sticky=(N, W, E), pady=3)
         self.score_val = 0
         self.score_val_str = StringVar()
         self.score_val_str.set(str(self.score_val))
-        self.score = Label(self.score_frame, textvariable=self.score_val_str, font=('Arial', 16))
-        self.score_label.pack(side='left')
-        self.score.pack(side='left')
-        self.level_frame = Frame(master, borderwidth=3)
-        self.level_frame.grid(column=1, row=1, sticky=(N, W, E))
-        self.level_label = Label(self.level_frame, text='Level: ', font=('Arial', 16))
+        self.score = Label(master, textvariable=self.score_val_str, font=("Arial", 16), bg="grey")
+        self.score.grid(column=2, row=0, sticky=(N, W, E), pady=3)
+        self.level_label = Label(master, text="Level: ", font=("Arial", 16), bg="grey")
+        self.level_label.grid(column=1, row=1, sticky=(N, W, E))
         self.level_val = 1
         self.level_val_str = StringVar()
         self.level_val_str.set(str(self.level_val))
-        self.level = Label(self.level_frame, textvariable=self.level_val_str, font=('Arial', 16))
-        self.level_label.pack(side='left')
-        self.level.pack(side='left')
-        self.master.grid_rowconfigure(1, weight=1)
-        self.speed = 500
+        self.level = Label(master, textvariable=self.level_val_str, font=("Arial", 16), bg="grey")
+        self.level_label.grid(column=1, row=1, sticky=(N, W, E))
+        self.level.grid(column=2, row=1, sticky=(N, W, E))
+        self.direction_label = Label(master, text="Rotate: arrow UP", bg="grey", font=("Arial", 12))
+        self.direction_label.grid(column=1, row=2, sticky=(N, W, E), pady=10, columnspan=2)
+        self.new_game_button = Button(master, text='New game', command=self.set_new_game, background="grey", fg="blue",
+                                      highlightbackground=constants.BACKGROUND)
+        self.new_game_button.grid(column=1, row=3, sticky=(N, W, E), pady=10, columnspan=2)
+        self.master.grid_rowconfigure(3, weight=1)
+
+    def set_new_game(self):
+        self.is_game_over = True
 
     def start(self):
         self.canvas.delete(ALL)
@@ -44,7 +49,10 @@ class Main:
         self.current_piece = None
         self.is_game_over = False
         self.score_val = 0
+        self.score_val_str.set(str(self.score_val))
         self.level_val = 1
+        self.level_val_str.set(str(self.level_val))
+        self.speed = constants.INITIAL_SPEED
         self.master.after(self.speed, self.move_fall)
 
     # adds new piece to the board
@@ -53,6 +61,10 @@ class Main:
 
     # main loop for moving, adding and removing lines
     def move_fall(self):
+        if self.is_game_over:
+            self.start()
+            return
+
         if self.is_new_game:
             self.add_piece()
             self.is_new_game = False
@@ -65,7 +77,6 @@ class Main:
             if self.current_piece.is_at_top:
                 messagebox.showinfo("GAME OVER", "Game over :-(")
                 self.is_game_over = True
-                self.start()
                 return
 
             self.add_piece()
@@ -101,8 +112,8 @@ class Main:
                 self.score_val_str.set(str(self.score_val))
                 if self.score_val % 10 == 0:
                     self.level_val += 1
-                    if self.speed > 50:
-                        self.speed -= 50
+                    if self.speed > constants.SPEED_STEP:
+                        self.speed -= constants.SPEED_STEP
 
                 # fall boxes that are above removed line
                 above_boxes = self.canvas.find_overlapping(1, 1, constants.CANVAS_W - 1, line - 1)
@@ -112,7 +123,7 @@ class Main:
 
 
 root = Tk()
-root.geometry(str(constants.CANVAS_W+100) + "x" + str(constants.CANVAS_H))
+root.geometry(str(constants.CANVAS_W+110) + "x" + str(constants.CANVAS_H))
 root.configure(bg=constants.BACKGROUND)
 root.resizable(False, False)
 main = Main(root)
