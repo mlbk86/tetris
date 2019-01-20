@@ -9,7 +9,7 @@ mail: mlbk86@gmail.com
 import constants
 
 
-def can_move_block(canvas, coords, direction, tag):
+def can_move_block_direction(canvas, coords, direction, tag):
     can_move = False
     is_at_bottom = False
 
@@ -46,6 +46,16 @@ def can_move_block(canvas, coords, direction, tag):
         can_move = is_box_from_one_piece(overlapped, canvas, tag)
 
     return can_move, is_at_bottom
+
+
+# Check if block can move to new coords without overlapping another piece
+def can_move_block_coords(canvas, coords, tag):
+    # find boxes that would be overlapped by current move
+    overlapped = canvas.find_overlapping(coords[0] + 1,
+                                         coords[3] + 1,
+                                         coords[2] - 1,
+                                         coords[3] + constants.BLOCK_SIZE - 1)
+    return is_box_from_one_piece(overlapped, canvas, tag)
 
 
 # check if (new) potential coordinates are within the canvas dimensions

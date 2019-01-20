@@ -59,7 +59,7 @@ class Piece:
 
     def can_move_piece(self, direction):
         for box in self.boxes:
-            result, self.is_at_bottom = Box.can_move_block(self.canvas, self.canvas.coords(box), direction,
+            result, self.is_at_bottom = Box.can_move_block_direction(self.canvas, self.canvas.coords(box), direction,
                                                            self.hash_tag)
             if not result:
                 return False
@@ -99,9 +99,8 @@ class Piece:
                 new_coords.append((x, root_y, x + constants.BLOCK_SIZE, root_y + constants.BLOCK_SIZE))
                 new_possible_direction = 0
 
-        for coord in new_coords:
-            if not (Box.coords_are_valid(coord[0], coord[1], coord[2], coord[3])):
-                return
+        if not self.can_move(new_coords):
+            return
 
         self.direction = new_possible_direction
         self.redraw(new_coords)
@@ -185,9 +184,8 @@ class Piece:
 
             new_possible_direction = 0
 
-        for coord in new_coords:
-            if not (Box.coords_are_valid(coord[0], coord[1], coord[2], coord[3])):
-                return
+        if not self.can_move(new_coords):
+            return
 
         self.direction = new_possible_direction
         self.redraw(new_coords)
@@ -271,9 +269,8 @@ class Piece:
 
             new_possible_direction = 0
 
-        for coord in new_coords:
-            if not (Box.coords_are_valid(coord[0], coord[1], coord[2], coord[3])):
-                return
+        if not self.can_move(new_coords):
+            return
 
         self.direction = new_possible_direction
         self.redraw(new_coords)
@@ -408,9 +405,8 @@ class Piece:
 
             new_possible_direction = 0
 
-        for coord in new_coords:
-            if not (Box.coords_are_valid(coord[0], coord[1], coord[2], coord[3])):
-                return
+        if not self.can_move(new_coords):
+            return
 
         self.direction = new_possible_direction
         self.redraw(new_coords)
@@ -456,9 +452,8 @@ class Piece:
 
             new_possible_direction = 0
 
-        for coord in new_coords:
-            if not (Box.coords_are_valid(coord[0], coord[1], coord[2], coord[3])):
-                return
+        if not self.can_move(new_coords):
+            return
 
         self.direction = new_possible_direction
         self.redraw(new_coords)
@@ -487,6 +482,16 @@ class Piece:
         new_y = y + y_move + y_multiplication * constants.BLOCK_SIZE
 
         return new_x, new_y
+
+    def can_move(self, new_coords):
+        can_move = True
+        for coord in new_coords:
+            if not (Box.coords_are_valid(coord[0], coord[1], coord[2], coord[3])):
+                can_move = False
+            if not Box.can_move_block_coords(self.canvas, coord, self.hash_tag):
+                can_move = False
+
+        return can_move
 
     @staticmethod
     def get_x(direction):
